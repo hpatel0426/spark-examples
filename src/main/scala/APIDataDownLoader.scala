@@ -4,10 +4,10 @@ import traits.DataFactory
 
 import scalaj.http.Http
 
-class APIDataDownLoader(apiEndPoint: String) extends DataFactory {
+class APIDataDownLoader(apiEndPoint: String,idRange:Range) extends DataFactory with Serializable {
 
   override def getPhysicianData(sparkSession: SparkSession): RDD[String] = {
-    val inputIds = sparkSession.sparkContext.parallelize(1000 until 2000)
+    val inputIds = sparkSession.sparkContext.parallelize(idRange)
     val dataRdd = inputIds.mapPartitions(_.map(x => {
       val response = Http(apiEndPoint).param("physician_profile_id", x.toString).asString
       if (response.code == 200) {
